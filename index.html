@@ -243,6 +243,29 @@ transform:scale(1.05);
 background:#ff3f82;
 }
 
+
+/* ===== MOBILE SCROLL FIX ===== */
+@media (max-width: 768px){
+
+  body{
+    align-items:flex-start;   /* allow natural top flow */
+    overflow-y:auto;
+  }
+
+  .container{
+    padding-top:100px;
+    padding-bottom:120px;   /* extra space so scrolling works */
+  }
+
+  .memory-card img{
+    height:160px;  /* slightly smaller for mobile */
+  }
+
+  .game-buttons{
+    margin-bottom:80px; /* ensures buttons are reachable */
+  }
+
+}
 </style>
 </head>
 
@@ -418,6 +441,7 @@ title.onclick=()=>location.reload();
 
 </body>
 </html>
+
 
 
 

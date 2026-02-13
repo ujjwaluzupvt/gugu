@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Catch Hearts 💘</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:'Quicksand',sans-serif;
+background:linear-gradient(-45deg,#ffd6e8,#ffe6d6,#ffc4d6,#ffddea);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+overflow:hidden;
+text-align:center;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+h1{
+font-family:'Great Vibes',cursive;
+font-size:3rem;
+color:#ff3f82;
+margin-top:10px;
+}
+
+#score{
+font-size:1.2rem;
+font-weight:600;
+color:#d9487d;
+margin:8px 0;
+}
+
+.game{
+position:relative;
+width:100%;
+height:75vh;
+overflow:hidden;
+}
+
+.heart{
+position:absolute;
+font-size:32px;
+animation:fall linear;
+pointer-events:none;
+}
+
+.gold{
+filter:drop-shadow(0 0 8px gold);
+font-size:36px;
+}
+
+@keyframes fall{
+0%{transform:translateY(-60px);}
+100%{transform:translateY(90vh);}
+}
+
+#basket{
+position:absolute;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+font-size:60px;
+transition:left .06s linear;
+}
+
+.popup{
+position:absolute;
+color:#ff2f7d;
+font-weight:bold;
+animation:pop 1s forwards;
+pointer-events:none;
+}
+@keyframes pop{
+0%{opacity:1;}
+100%{opacity:0;transform:translateY(-40px);}
+}
+
+/* SHAKE */
+.shake{animation:shake .25s;}
+@keyframes shake{
+0%{transform:translate(0)}
+25%{transform:translate(-6px,4px)}
+50%{transform:translate(6px,-4px)}
+75%{transform:translate(-4px,3px)}
+100%{transform:translate(0)}
+}
+
+/* START SCREEN */
+#startScreen{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+z-index:10;
+}
+#playBtn{
+background:#ff4f8b;
+color:white;
+border:none;
+padding:16px 40px;
+border-radius:999px;
+font-size:1.3rem;
+cursor:pointer;
+}
+
+/* GAME OVER */
+#gameOver{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(0);
+background:linear-gradient(145deg,#fff0f7,#ffe6ef);
+padding:25px 30px;
+border-radius:25px;
+box-shadow:0 10px 30px rgba(255,120,170,.35);
+transition:.45s;
+z-index:12;
+}
+#gameOver.show{
+transform:translate(-50%,-50%) scale(1);
+}
+#gameOver h2{
+font-family:'Great Vibes',cursive;
+font-size:2.2rem;
+color:#ff3f82;
+}
+#gameOver p{
+color:#d9487d;
+font-weight:600;
+margin:10px 0;
+}
+.end-buttons{
+display:flex;
+gap:10px;
+justify-content:center;
+}
+.end-btn{
+border:none;
+padding:10px 18px;
+border-radius:999px;
+cursor:pointer;
+background:#ff4f8b;
+color:white;
+}
+
+/* PETALS */
+.petal{
+position:absolute;
+font-size:24px;
+animation:petalFall linear forwards;
+pointer-events:none;
+opacity:.8;
+}
+@keyframes petalFall{
+0%{transform:translateY(-50px) rotate(0deg);}
+100%{transform:translateY(100vh) rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+
+<h1>Catch the Hearts 💘</h1>
+<div id="score">Score: 0 | Combo x1 | Missed: 0/30</div>
+
+<div class="game" id="game">
+
+<div id="basket">💌</div>
+
+<div id="startScreen">
+<button id="playBtn">💘 Play Game</button>
+</div>
+
+<div id="gameOver">
+<h2>💔 Love Meter Empty</h2>
+<p id="finalScore"></p>
+
+<div class="end-buttons">
+<button class="end-btn" onclick="location.reload()">🔄 Play Again</button>
+<button class="end-btn" onclick="location.href='index.html'">💕 Back to Main Page</button>
+</div>
+</div>
+
+</div>
+
+<audio id="bgMusic" loop>
+<source src="music/intro.mp3">
+</audio>
+
+<script>
+const game=document.getElementById("game");
+const basket=document.getElementById("basket");
+const scoreText=document.getElementById("score");
+const bgMusic=document.getElementById("bgMusic");
+const gameOver=document.getElementById("gameOver");
+const finalScore=document.getElementById("finalScore");
+
+let score=0,combo=1,missed=0,running=false;
+
+/* MUSIC SPEED */
+function updateMusicSpeed(){
+let speed = 1 + (score / 55);
+if(speed>2.4) speed=2.4;
+bgMusic.playbackRate = speed;
+}
+
+/* petals ending */
+function startPetals(){
+setInterval(()=>{
+let p=document.createElement("div");
+p.className="petal";
+p.innerHTML=["🌸","💮","🌺"][Math.floor(Math.random()*3)];
+p.style.left=Math.random()*window.innerWidth+"px";
+p.style.animationDuration=(4+Math.random()*3)+"s";
+document.body.appendChild(p);
+setTimeout(()=>p.remove(),7000);
+},300);
+}
+
+/* basket move */
+function moveBasket(x){ basket.style.left=x+"px"; }
+document.addEventListener("mousemove",e=>moveBasket(e.clientX));
+document.addEventListener("touchmove",e=>moveBasket(e.touches[0].clientX));
+
+function popup(text,x,y){
+let p=document.createElement("div");
+p.className="popup";
+p.innerHTML=text;
+p.style.left=x+"px";
+p.style.top=y+"px";
+game.appendChild(p);
+setTimeout(()=>p.remove(),900);
+}
+
+function shake(){
+document.body.classList.add("shake");
+setTimeout(()=>document.body.classList.remove("shake"),250);
+}
+
+/* create hearts */
+function createHeart(){
+if(!running) return;
+
+let h=document.createElement("div");
+h.className="heart";
+
+let gold=Math.random()<0.12;
+h.innerHTML=gold?"💛":"❤️";
+if(gold) h.classList.add("gold");
+h.dataset.gold=gold;
+
+h.style.left=Math.random()*(window.innerWidth-40)+"px";
+h.style.animationDuration=(3+Math.random()*2)+"s";
+game.appendChild(h);
+
+let check=setInterval(()=>{
+let r=h.getBoundingClientRect();
+let b=basket.getBoundingClientRect();
+
+if(r.bottom>=b.top && r.left<b.right && r.right>b.left){
+
+if(h.dataset.gold==="true"){
+score+=10;
+popup("🌟 GOLD +10!",r.left,r.top);
+}else{
+score+=combo;
+popup("💘 +"+combo,r.left,r.top);
+combo++;
+}
+
+updateMusicSpeed();   // ⭐ MUSIC SPEED UP
+
+if(combo%10===0) shake();
+
+scoreText.innerHTML=
+`Score: ${score} | Combo x${combo} | Missed: ${missed}/30`;
+
+h.remove();
+clearInterval(check);
+}
+
+if(r.top>window.innerHeight){
+missed++;
+combo=1;
+scoreText.innerHTML=
+`Score: ${score} | Combo x${combo} | Missed: ${missed}/30`;
+h.remove();
+clearInterval(check);
+
+if(missed>=30){
+running=false;
+finalScore.innerHTML="Final Score: "+score;
+gameOver.classList.add("show");
+startPetals();
+}
+}
+},30);
+}
+
+/* START GAME */
+document.getElementById("playBtn").onclick=()=>{
+running=true;
+bgMusic.play();
+document.getElementById("startScreen").style.display="none";
+setInterval(createHeart,700);
+};
+</script>
+
+</body>
+</html>
+
+
+
+

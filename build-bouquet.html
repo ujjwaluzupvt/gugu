@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Build a Bouquet 💐</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Quicksand',sans-serif;
+background:linear-gradient(145deg,#fdeff2,#fff3e6,#fee9f0);
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+text-align:center;
+padding:20px;
+}
+
+
+/* MUSIC BUTTON */
+#musicBtn{
+position:fixed;
+top:15px;
+right:15px;
+background:#e75480;
+color:white;
+border:none;
+padding:10px 16px;
+border-radius:999px;
+font-size:0.95rem;
+font-weight:600;
+cursor:pointer;
+box-shadow:0 6px 12px rgba(255,120,160,.35);
+transition:.3s;
+z-index:999;
+}
+
+#musicBtn:hover{
+transform:scale(1.07);
+background:#ff4370;
+}
+
+h1{
+font-family:'Great Vibes',cursive;
+font-size:3rem;
+color:#c1476b;
+text-shadow:0 2px 10px #ffb8cf;
+}
+
+.sub{
+color:#6f4e5e;
+margin-bottom:25px;
+font-weight:500;
+}
+
+/* BOUQUET */
+.bouquet{
+width:280px;
+height:300px;
+position:relative;
+display:flex;
+justify-content:flex-end;
+align-items:center;
+flex-direction:column;
+filter:drop-shadow(0 12px 12px rgba(190,120,140,.3));
+}
+
+/* FLOWER ZONE (TOP AREA ONLY) */
+.flower-zone{
+position:absolute;
+top:150px;        /* ⭐ moved DOWN */
+left:20px;
+width:240px;
+height:130px;    /* smaller area */
+overflow:hidden;
+border-radius:50% 50% 40% 40%;
+pointer-events:none;
+z-index:15;
+}
+
+
+/* wrapped base */
+.bouquet-base{
+width:180px;
+height:130px;
+background:linear-gradient(145deg,#f9c9d2,#f7b5c9);
+border-radius:50% 50% 40% 40% / 60% 60% 30% 30%;
+border:3px solid #ffebf0;
+box-shadow:0 10px 0 #b38b9e,inset 0 -8px 10px #ffd9e2;
+transform:rotate(2deg);
+position:relative;
+z-index:2;
+}
+
+.bouquet-base::before{
+content:"🎀";
+position:absolute;
+font-size:38px;
+top:-35px;
+left:50%;
+transform:translateX(-50%);
+}
+
+/* FLOWERS */
+.flower{
+position:absolute;
+font-size:42px;
+animation:bloom .3s cubic-bezier(.2,1.3,.8,1);
+pointer-events:none;
+text-shadow:0 2px 5px #fff0f5;
+}
+
+@keyframes bloom{
+0%{transform:scale(.3) translateY(20px);opacity:0;}
+100%{transform:scale(1) translateY(0);opacity:1;}
+}
+
+/* buttons */
+.flower-options{
+margin:30px 0 20px;
+display:flex;
+gap:18px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.flower-btn{
+font-size:48px;
+background:rgba(255,255,255,.8);
+border:2px solid #ffc1d0;
+padding:12px 20px;
+border-radius:60px;
+cursor:pointer;
+transition:.2s;
+}
+
+.flower-btn:hover{
+transform:scale(1.2) rotate(5deg);
+}
+
+/* message */
+#message{
+margin-top:15px;
+font-family:'Great Vibes',cursive;
+font-size:1.8rem;
+color:#b33b66;
+opacity:0;
+transition:.6s;
+}
+
+#message.show{
+opacity:1;
+}
+
+/* back */
+.back{
+margin-top:25px;
+background:#e75480;
+color:white;
+padding:12px 40px;
+border:none;
+border-radius:50px;
+font-size:1.1rem;
+cursor:pointer;
+}
+
+.hint{margin:10px;color:#a75b77;}
+.reset-note{font-size:.85rem;color:#ba7a8e;margin-top:8px;}
+</style>
+</head>
+
+<body>
+
+<h1>Build a Bouquet 💐</h1>
+<div class="sub">Choose flowers & place them into the bouquet for Gugu 💕</div>
+
+<div class="bouquet" id="bouquet">
+
+  <!-- FLOWERS AREA -->
+  <div class="flower-zone" id="flowerZone"></div>
+
+  <!-- BASE -->
+  <div class="bouquet-base"></div>
+
+</div>
+
+<div class="hint">🌸 click a flower to add it near the top 🌸</div>
+
+<div class="flower-options">
+<button class="flower-btn">🌸</button>
+<button class="flower-btn">🌹</button>
+<button class="flower-btn">🌼</button>
+<button class="flower-btn">🌷</button>
+<button class="flower-btn">💐</button>
+<button class="flower-btn">🌺</button>
+<button class="flower-btn">🌻</button>
+</div>
+
+<div id="message">💐 Gugu's bouquet is perfection! 💐</div>
+
+<button class="back" onclick="location.href='index.html'">
+⬅ Back to Love Page
+</button>
+
+<div class="reset-note">✨ double-tap bouquet to reset ✨</div>
+<!-- MUSIC BUTTON -->
+<button id="musicBtn">🎵 Play Music</button>
+
+<!-- MUSIC -->
+<audio id="bgMusic" loop>
+  <source src="music/Deewana_Final.wav" type="audio/mpeg">
+</audio>
+<script>
+const bouquet=document.getElementById("bouquet");
+const flowerZone=document.getElementById("flowerZone");
+const message=document.getElementById("message");
+const base=document.querySelector(".bouquet-base");
+
+let count=0;
+const MAX_FLOWERS=40;
+
+/* safe flower placement */
+function getFlowerPosition(){
+return{
+left:10 + Math.random()*190,
+top:15 + Math.random()*45
+   // ⭐ lower range
+};
+}
+
+
+/* reset */
+function resetBouquet(){
+document.querySelectorAll(".flower").forEach(f=>f.remove());
+count=0;
+message.classList.remove("show");
+}
+
+bouquet.addEventListener("dblclick",resetBouquet);
+
+document.querySelectorAll(".flower-btn").forEach(btn=>{
+btn.addEventListener("click",()=>{
+
+if(count>=MAX_FLOWERS){
+message.classList.add("show");
+return;
+}
+
+let flower=document.createElement("div");
+flower.className="flower";
+flower.innerHTML=btn.innerHTML;
+
+const pos=getFlowerPosition();
+flower.style.left=pos.left+"px";
+flower.style.top=pos.top+"px";
+
+flowerZone.appendChild(flower);
+
+count++;
+
+if(count===MAX_FLOWERS){
+message.classList.add("show");
+}
+});
+});
+
+const musicBtn = document.getElementById("musicBtn");
+const bgMusic = document.getElementById("bgMusic");
+
+let playing = false;
+
+musicBtn.addEventListener("click",()=>{
+
+if(!playing){
+    bgMusic.volume = 0.6;
+    bgMusic.play();
+    musicBtn.innerHTML = "⏸ Pause Music";
+}else{
+    bgMusic.pause();
+    musicBtn.innerHTML = "🎵 Play Music";
+}
+
+playing = !playing;
+});
+
+</script>
+
+<div style="margin-top:10px;color:#bd7f94;">made with 💖 for Gugu</div>
+
+
+</body>
+</html>

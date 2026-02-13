@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Meri Pyaari Gugu ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:'Quicksand',sans-serif;
+min-height:100vh;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:linear-gradient(-45deg,#ffd6e8,#ffe6d6,#ffc4d6,#ffddea);
+background-size:400% 400%;
+animation:bg 15s ease infinite;
+cursor:none;
+}
+
+body.scrolling{
+overflow-y:auto;
+align-items:flex-start;
+padding:40px 0 60px;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.container{
+width:90%;
+max-width:500px;
+padding:20px;
+}
+
+h1{
+font-family:'Great Vibes',cursive;
+font-size:3rem;
+color:#ff3f82;
+cursor:none;
+}
+
+.main-q{font-size:2rem;font-weight:600;margin:15px 0;}
+.sub{color:#666;margin-bottom:15px;}
+
+img{
+width:220px;
+max-width:80vw;
+border-radius:20px;
+margin:10px auto;
+display:block;
+}
+
+/* BUTTONS */
+.buttons{display:flex;justify-content:center;gap:15px}
+button{
+padding:14px 26px;
+border:none;
+border-radius:999px;
+font-size:1rem;
+cursor:none;
+transition:.3s;
+}
+#yes{background:#ff4f8b;color:white;}
+#yes:hover{transform:scale(1.08);}
+#no{background:white;color:#ff4f8b;position:relative;}
+
+.hidden{display:none}
+
+/* LETTER */
+.letter{
+margin-top:25px;
+background:linear-gradient(135deg,#fff9fb,#fff0f6);
+padding:25px;
+border-radius:25px;
+box-shadow:0 12px 30px rgba(255,120,170,.25);
+opacity:0;
+transform:perspective(800px) rotateX(-90deg);
+transform-origin:top;
+transition:1s ease;
+}
+
+.letter.show{
+opacity:1;
+transform:perspective(800px) rotateX(0);
+animation:paperDrop 1s ease;
+}
+
+@keyframes paperDrop{
+0%{transform:perspective(800px) rotateX(-90deg);}
+60%{transform:perspective(800px) rotateX(10deg);}
+100%{transform:perspective(800px) rotateX(0);}
+}
+
+.typing{
+white-space:pre-wrap;
+line-height:1.7;
+text-align:left;
+}
+
+/* ===== CINEMATIC SCRAPBOOK SLIDER ===== */
+
+.slider{
+margin-top:25px;
+overflow:hidden;
+border-radius:20px;
+width:100%;
+height:280px;
+background:#fff6fa;
+box-shadow:0 12px 25px rgba(255,120,170,.25);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+@keyframes floatAlbum{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-4px);}
+100%{transform:translateY(0px);}
+}
+
+.slides {
+    display:flex;
+    height:100%;
+    width:max-content;  /* ⭐ KEY FIX */
+    transition:transform .7s ease;
+    animation:floatAlbum 4s ease-in-out infinite;
+    will-change:transform;
+}
+
+
+
+.slides img{
+width:500px;      /* same as container max width */
+height:100%;
+flex:0 0 500px;  /* IMPORTANT FIX */
+
+object-fit:contain;
+padding:10px;
+background:white;
+border-radius:12px;
+box-shadow:0 8px 15px rgba(0,0,0,.15);
+}
+
+
+/* CURSOR */
+#heartCursor{
+position:fixed;
+pointer-events:none;
+font-size:20px;
+z-index:9999;
+transform:translate(-50%,-50%);
+}
+
+/* TRAIL */
+.trail-heart{
+position:fixed;
+pointer-events:none;
+font-size:14px;
+animation:trail .8s forwards;
+}
+@keyframes trail{
+0%{opacity:1;transform:translate(-50%,-50%) scale(1);}
+100%{opacity:0;transform:translate(-50%,-80px) scale(.3);}
+}
+
+
+/* ===== ROMANTIC MEMORY CARDS ===== */
+
+.memory-grid{
+margin-top:25px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
+.memory-card{
+background:white;
+padding:8px;
+border-radius:15px;
+box-shadow:0 8px 15px rgba(0,0,0,.12);
+transform:rotate(-1.5deg);
+transition:.4s ease;
+}
+
+.memory-card:nth-child(even){
+transform:rotate(1.5deg);
+}
+
+.memory-card:hover{
+transform:scale(1.05) rotate(0deg);
+}
+
+.memory-card img{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:10px;
+}
+
+
+/* ===== GAME BUTTONS ===== */
+
+.game-buttons{
+margin-top:30px;
+display:flex;
+flex-direction:column;
+gap:12px;
+opacity:0;
+transform:translateY(20px);
+transition:.8s ease;
+}
+
+.game-buttons.show{
+opacity:1;
+transform:translateY(0);
+}
+
+.game-btn{
+background:#ff4f8b;
+color:white;
+border:none;
+padding:14px 20px;
+border-radius:999px;
+font-size:1rem;
+font-weight:600;
+cursor:none;
+box-shadow:0 6px 15px rgba(255,80,130,.35);
+transition:.3s;
+}
+
+.game-btn:hover{
+transform:scale(1.05);
+background:#ff3f82;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 id="title">Meri Pyaari Gugu ❤️</h1>
+
+<img id="puppy" src="https://media.giphy.com/media/dPoXB5tvUrSh5s2zF0/giphy.gif">
+
+<div class="main-q">Will you be my Valentine?</div>
+<div class="sub">Please say yes… I’m asking with puppy eyes 🥺</div>
+
+<div class="buttons">
+<button id="yes">Yes 💖</button>
+<button id="no">No 😏</button>
+</div>
+
+<div id="afterYes" class="hidden">
+
+<div class="letter" id="letter">
+<div id="typing" class="typing"></div>
+</div>
+
+<h2 style="margin-top:20px;color:#ff4f8b;">Our Cute Memories 💕</h2>
+
+<div class="memory-grid">
+
+<div class="memory-card">
+<img src="img/IMG_1083.jpg">
+</div>
+
+<div class="memory-card">
+<img src="img/19087.jpg">
+</div>
+
+<div class="memory-card">
+<img src="img/21307.jpg">
+</div>
+
+<div class="memory-card">
+<img src="img/21315.jpg">
+</div>
+
+</div>
+
+<div class="game-buttons" id="gameButtons">
+
+<button class="game-btn"
+onclick="window.location.href='catch-hearts.html'">
+💘 Catch the Hearts
+</button>
+
+<button class="game-btn"
+onclick="window.location.href='build-bouquet.html'">
+💐 Build a Bouquet
+</button>
+
+</div>
+
+
+</div>
+</div>
+
+<div id="heartCursor">💖</div>
+
+<!-- MUSIC -->
+<audio id="introMusic" loop>
+<source src="music/intro.mp3">
+</audio>
+
+<audio id="yesMusic" loop>
+<source src="music/yes.mp3">
+</audio>
+
+<script>
+const title=document.getElementById("title");
+const yesBtn=document.getElementById("yes");
+const noBtn=document.getElementById("no");
+const puppy=document.getElementById("puppy");
+const afterYes=document.getElementById("afterYes");
+const letter=document.getElementById("letter");
+const typing=document.getElementById("typing");
+const heartCursor=document.getElementById("heartCursor");
+const introMusic=document.getElementById("introMusic");
+const yesMusic=document.getElementById("yesMusic");
+const gameButtons = document.getElementById("gameButtons");
+
+
+/* CURSOR */
+let last=0;
+document.addEventListener("mousemove",e=>{
+heartCursor.style.left=e.clientX+"px";
+heartCursor.style.top=e.clientY+"px";
+
+if(Date.now()-last<40)return;
+last=Date.now();
+
+let t=document.createElement("div");
+t.className="trail-heart";
+t.innerHTML="💖";
+t.style.left=e.clientX+"px";
+t.style.top=e.clientY+"px";
+document.body.appendChild(t);
+setTimeout(()=>t.remove(),800);
+});
+
+/* MUSIC START */
+document.body.addEventListener("click",()=>{
+introMusic.volume=.5;
+introMusic.play();
+},{once:true});
+
+/* CROSSFADE */
+function crossFadeMusic(from,to,d=2500){
+let steps=30,s=0;
+to.volume=0;to.play();
+let i=setInterval(()=>{
+s++;
+from.volume=Math.max(0,0.5-s*(0.5/steps));
+to.volume=Math.min(0.6,s*(0.6/steps));
+if(s>=steps){clearInterval(i);from.pause();}
+},d/steps);
+}
+
+/* NO BUTTON */
+const txt=["Are you sure? 🥺","Think again 😭","Catch me first 😏"];
+let i=0;
+noBtn.onmouseover=()=>{
+noBtn.style.position="absolute";
+noBtn.style.left=Math.random()*70+"%";
+noBtn.style.top=Math.random()*70+"%";
+noBtn.innerText=txt[i++%3];
+};
+
+function typeText(text){
+typing.innerHTML="";
+let i=0;
+(function t(){if(i<text.length){typing.innerHTML+=text[i++];setTimeout(t,35);}})();
+}
+
+/* YES */
+yesBtn.onclick=()=>{
+document.body.classList.add("scrolling");
+
+document.querySelector(".main-q").style.display="none";
+document.querySelector(".sub").style.display="none";
+document.querySelector(".buttons").style.display="none";
+
+puppy.src="";
+setTimeout(()=>puppy.src="https://media.giphy.com/media/RScVjpzVPow8nASyya/giphy.gif",50);
+
+afterYes.classList.remove("hidden");
+setTimeout(()=>letter.classList.add("show"),300);
+
+crossFadeMusic(introMusic,yesMusic);
+
+setTimeout(()=>afterYes.scrollIntoView({behavior:"smooth"}),500);
+
+typeText("From the moment you came into my life, everything became brighter ❤️\nThank you for being my happiness, my peace, and my favorite person.\nI love you more than words could ever say, my Gugu 💕");
+};
+setTimeout(()=>{
+    gameButtons.classList.add("show");
+},1200);
+
+
+
+
+/* RESTART */
+title.onclick=()=>location.reload();
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
